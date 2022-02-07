@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "resolveJsonModule": true,
+      "outDir": "dist/ts",
+      "target": "esnext",
+      "module": "esnext",
+      "moduleResolution": "node",
+      "strict": false,
+      "declaration": true,
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitReturns": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "stripInternal": true,
+      "allowSyntheticDefaultImports": true
+    }
+  }
