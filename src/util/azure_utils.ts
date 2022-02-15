@@ -1,7 +1,7 @@
 import {ethers} from 'ethers';
 import {KeyClient, CryptographyClient, SignResult} from '@azure/keyvault-keys';
 import {ClientSecretCredential} from '@azure/identity';
-import BN from 'bn.js';
+import {BN} from 'bn.js';
 import {AzureKeyVaultCredentials} from '../index';
 
 /**
@@ -47,13 +47,17 @@ export async function sign(digest: Buffer,
       keyVaultCredentials.tenantId, keyVaultCredentials.clientId,
       keyVaultCredentials.clientSecret);
 
-  const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
-  const client = new KeyClient(keyVaultUrl, credentials);
-  const keyObject = await client.getKey(keyVaultCredentials.keyName);
-  const cryptographyClient = new CryptographyClient(keyObject, credentials);
+  try {
+    const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
+    const client = new KeyClient(keyVaultUrl, credentials);
+    const keyObject = await client.getKey(keyVaultCredentials.keyName);
+    const cryptographyClient = new CryptographyClient(keyObject, credentials);
 
-  const signedDigest = await cryptographyClient.sign('ES256K', digest);
-  return signedDigest;
+    const signedDigest = await cryptographyClient.sign('ES256K', digest);
+    return signedDigest;
+  } catch (err) {
+    throw new Error(err);
+  }
 }
 
 /**
@@ -95,4 +99,45 @@ export function determineCorrectV(
     pubKey = recoverPubKeyFromSig(msg, r, s, v);
   }
   return {pubKey, v};
+}
+
+/**
+ *
+ * @param {Buffer} signature
+ * @return {any}
+ */
+export function findEthereumSig(signature: Buffer) {
+  const r = new BN(signature.slice(0, 32));
+  const s = new BN(signature.slice(32, 64));
+
+  const secp256k1N = new BN(
+      'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
+      16); // max value on the curve
+  const secp256k1halfN = secp256k1N.div(new BN(2)); // half of the curve
+  // Because of EIP-2 not all elliptic curve signatures are accepted
+  // the value of s needs to be SMALLER than half of the curve
+  // i.e. we need to flip s if it's greater than half of the curve
+  // if s is less than half of the curve,
+  // we're on the "good" side of the curve, we can just return
+  return {r, s: s.gt(secp256k1halfN) ? secp256k1N.sub(s) : s};
+}
+
+/**
+ *
+ * @param {Buffer} plaintext
+ * @param {AzureKeyVaultCredentials} keyVaultCredentials
+ * @return {any}
+ */
+export async function requestAKVSignature(
+    plaintext: Buffer, keyVaultCredentials: AzureKeyVaultCredentials) {
+  try {
+    const signResult = await sign(plaintext, keyVaultCredentials);
+
+    if (!signResult.result) {
+      throw new Error('Azure Key Vault Signed result empty');
+    }
+    return findEthereumSig(Buffer.from(signResult.result));
+  } catch (err) {
+    throw new Error(err);
+  }
 }
