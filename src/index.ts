@@ -1,5 +1,9 @@
-import {ethers} from 'ethers';
-import {getEthereumAddress, getPublicKey} from './util/azure_utils';
+import {ethers, UnsignedTransaction} from 'ethers';
+import {getEthereumAddress,
+  getPublicKey,
+  requestAKVSignature,
+  determineCorrectV,
+} from './util/azure_utils';
 
 export interface AzureKeyVaultCredentials {
   keyName: string;
@@ -44,10 +48,28 @@ export class AzureKeyVaultSigner extends ethers.Signer {
 
   /**
    *
+   * @param {string} digestString
+   * @return {any}
+   */
+  async _signDigest(digestString: string): Promise<string> {
+    const digestBuffer = Buffer.from(ethers.utils.arrayify(digestString));
+    const sig = await requestAKVSignature(
+        digestBuffer, this.keyVaultCredentials);
+    const ethAddr = await this.getAddress();
+    const {v} = determineCorrectV(digestBuffer, sig.r, sig.s, ethAddr);
+    return ethers.utils.joinSignature({
+      v,
+      r: `0x${sig.r.toString('hex')}`,
+      s: `0x${sig.s.toString('hex')}`,
+    });
+  }
+  /**
+   *
    * @param {string | ethers.utils.Bytes} message
    * @return {string}
    */
   async signMessage(message: string | ethers.utils.Bytes): Promise<string> {
+    return this._signDigest(ethers.utils.hashMessage(message));
   }
 
   /**
@@ -58,6 +80,13 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   async signTransaction(transaction:
   ethers.utils.Deferrable<ethers.providers.TransactionRequest>):
   Promise<string> {
+    const unsignedTx = await ethers.utils.resolveProperties(transaction);
+    const serializedTx = ethers.utils.serializeTransaction(
+        <UnsignedTransaction>unsignedTx);
+    const transactionSignature = await this._signDigest(
+        ethers.utils.keccak256(serializedTx));
+    return ethers.utils.serializeTransaction(
+        <UnsignedTransaction>unsignedTx, transactionSignature);
   }
 
   /**
