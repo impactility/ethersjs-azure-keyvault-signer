@@ -1,29 +1,33 @@
 import {ethers} from 'ethers';
+import {getEthereumAddress, getPublicKey} from './util/azure_utils';
 
-export interface AzureKeyVaultKey {
-    id: string;
-    key?: object;
-    keyType?: string
-    name: string;
+export interface AzureKeyVaultCredentials {
+  keyName: string;
+  vaultName: string;
+  clientId: string;
+  clientSecret: string;
+  tenantId: string;
+  keyVersion?: string
 }
 
 /**
  *
  */
 export class AzureKeyVaultSigner extends ethers.Signer {
-  azureKeyVaultKey: AzureKeyVaultKey;
+  keyVaultCredentials: AzureKeyVaultCredentials;
   ethereumAddress: string;
 
   /**
    *
-   * @param {AzureKeyVaultKey} azureKeyVaultKey
+   * @param {AzureKeyVaultCredentials} keyVaultCredentials
    * @param {ethers.providers.Provider} provider
    */
-  constructor(azureKeyVaultKey: AzureKeyVaultKey,
+  constructor(keyVaultCredentials: AzureKeyVaultCredentials,
       provider?: ethers.providers.Provider) {
     super();
     ethers.utils.defineReadOnly(this, 'provider', provider);
-    ethers.utils.defineReadOnly(this, 'azureKeyVaultKey', azureKeyVaultKey);
+    ethers.utils.defineReadOnly(this, 'keyVaultCredentials',
+        keyVaultCredentials);
   }
 
   /**
@@ -31,6 +35,11 @@ export class AzureKeyVaultSigner extends ethers.Signer {
    * @return {string}
    */
   async getAddress(): Promise<string> {
+    if (!this.ethereumAddress) {
+      const key = await getPublicKey(this.keyVaultCredentials);
+      this.ethereumAddress = await getEthereumAddress(key);
+    }
+    return Promise.resolve(this.ethereumAddress);
   }
 
   /**
@@ -56,6 +65,6 @@ export class AzureKeyVaultSigner extends ethers.Signer {
    * @return {AzureKeyVaultSigner}
    */
   connect(provider: ethers.providers.Provider): AzureKeyVaultSigner {
-    return new AzureKeyVaultSigner(this.azureKeyVaultKey, provider);
+    return new AzureKeyVaultSigner(this.keyVaultCredentials, provider);
   }
 }
