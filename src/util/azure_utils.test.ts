@@ -25,7 +25,6 @@ describe('getEthereumAddress', () => {
 describe('findEthereumSig', () => {
   test('should work correctly', () => {
     const sampleSignature = Buffer.from(
-        // eslint-disable-next-line max-len
         '304502203f25afdb7ed67094101cd71109261886db9abbf1ba20cc53aec20ba01c2e6baa022100ab0de6d40f8960c252fc6f21e35e8369126fb19033f10953c42a61766635df82',
         'hex',
     );

@@ -63,6 +63,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
       s: `0x${sig.s.toString('hex')}`,
     });
   }
+
   /**
    *
    * @param {string | ethers.utils.Bytes} message

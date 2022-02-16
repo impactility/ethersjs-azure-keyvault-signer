@@ -7,12 +7,14 @@
         "moduleResolution": "node",
         "strict": false,
         "declaration": true,
+        "emitDeclarationOnly": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "stripInternal": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": true
     },
     "exclude": [
         "dist/*",
