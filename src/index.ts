@@ -35,7 +35,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
-   *
+   * Returns Ethereum address for an azure key-vault SECP256-K1 key
    * @return {string}
    */
   async getAddress(): Promise<string> {
@@ -47,7 +47,8 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
-   *
+   * Sings the digest buffer with an azure key-vault SECP-256K1 key
+   * and returns signature
    * @param {string} digestString
    * @return {any}
    */
@@ -65,7 +66,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
-   *
+   * Signs a string or byte array with an azure keyvault SECP-256K1 key
    * @param {string | ethers.utils.Bytes} message
    * @return {string}
    */
@@ -74,6 +75,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
+   * Signs and serializes a transaction with an azure keyvault SECP-256K1 key
    * @param {ethers.utils.Deferrable<ethers.providers.
    * TransactionRequest>} transaction
    * @return {string}
@@ -91,6 +93,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
+   * Connects to a ethers provider
    * @param {ethers.providers.Provider} provider
    * @return {AzureKeyVaultSigner}
    */

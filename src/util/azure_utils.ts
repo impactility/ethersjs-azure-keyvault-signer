@@ -5,7 +5,7 @@ import {BN} from 'bn.js';
 import {AzureKeyVaultCredentials} from '../index';
 
 /**
- *
+ * Constructs public key from azure key-vault JWK
  * @param {AzureKeyVaultCredentials} keyVaultCredentials
  */
 export async function getPublicKey(keyVaultCredentials:
@@ -23,7 +23,7 @@ export async function getPublicKey(keyVaultCredentials:
   return publicKey;
 }
 /**
- *
+ * Returns ethereum address for a SECP-256K1 public key
  * @param {Buffer} publicKey
  * @return {string}
  */
@@ -36,7 +36,8 @@ export async function getEthereumAddress(publicKey: Buffer): Promise<string> {
 }
 
 /**
- *
+ * Signs a digest buffer with an azure key-vault SECP-256K1 key
+ * using ES256K algorithm
  * @param {Buffer} digest
  * @param {AzureKeyVaultCredentials} keyVaultCredentials
  * @return {SignResult}
@@ -61,7 +62,7 @@ export async function sign(digest: Buffer,
 }
 
 /**
- *
+ * Recovers public key from an ECDSA signature
  * @param {Buffer} msg
  * @param {BN} r
  * @param {BN} s
@@ -77,7 +78,7 @@ function recoverPubKeyFromSig(msg: Buffer, r: BN, s: BN, v: number) {
 }
 
 /**
- *
+ * Determines the correct recovery identifier 'v' from an ECSDA signature
  * @param {Buffer} msg
  * @param {BN} r
  * @param {BN} s
@@ -102,7 +103,7 @@ export function determineCorrectV(
 }
 
 /**
- *
+ * Calculates r and s values of an ECDSA signature
  * @param {Buffer} signature
  * @return {any}
  */
@@ -123,7 +124,7 @@ export function findEthereumSig(signature: Buffer) {
 }
 
 /**
- *
+ * Requests an Azure Key Vault signature for message buffer
  * @param {Buffer} plaintext
  * @param {AzureKeyVaultCredentials} keyVaultCredentials
  * @return {any}
