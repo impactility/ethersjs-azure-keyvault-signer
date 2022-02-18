@@ -5,6 +5,10 @@ import {getEthereumAddress,
   determineCorrectV,
 } from './util/azure_utils';
 
+/**
+ * azure key vault parameters required to
+ * instantiate an instance of AzureKeyVaultSigner
+ */
 export interface AzureKeyVaultCredentials {
   keyName: string;
   vaultName: string;
@@ -15,14 +19,13 @@ export interface AzureKeyVaultCredentials {
 }
 
 /**
- *
+ * class implementing ethers Signer methods for keys stored in Azure Key Vault
  */
 export class AzureKeyVaultSigner extends ethers.Signer {
   keyVaultCredentials: AzureKeyVaultCredentials;
   ethereumAddress: string;
 
   /**
-   *
    * @param {AzureKeyVaultCredentials} keyVaultCredentials
    * @param {ethers.providers.Provider} provider
    */
@@ -35,6 +38,8 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
+   * returns an ethereum address based on the public key
+   * retrieved from Azure Key Vault
    *
    * @return {string}
    */
@@ -91,6 +96,8 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
+   * facilitates connection to a web3 provider
+   *
    * @param {ethers.providers.Provider} provider
    * @return {AzureKeyVaultSigner}
    */

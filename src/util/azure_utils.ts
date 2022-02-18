@@ -22,6 +22,7 @@ export async function getPublicKey(keyVaultCredentials:
 
   return publicKey;
 }
+
 /**
  *
  * @param {Buffer} publicKey

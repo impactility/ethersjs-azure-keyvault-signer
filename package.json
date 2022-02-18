@@ -1,8 +1,8 @@
 {
   "name": "ethersjs-azure-keyvault-signer",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "description": "An Ethers.js compatible signer that connects to Azure Key Vault",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "check-types": "tsc",
@@ -20,7 +20,15 @@
     "keyvault",
     "web3signer"
   ],
-  "author": "Impactility",
+  "author": {
+    "name": "Impactility",
+    "email": "administration@impactility.com",
+    "url": "https://github.com/impactility-dev"
+  },
+  "contributors": [
+    {"name":"Sumit Hotchandani","email":"sumit.hothchandani@impactility.com","url":"https://github.com/Sumitjh26997"},
+    {"name":"Shikhar Bhatt","email":"shikhar.bhatt@impactility.com","url":"https://github.com/ShikharBhatt"}
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/issues"

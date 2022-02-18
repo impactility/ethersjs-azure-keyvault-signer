@@ -8,14 +8,14 @@ import {getEthereumAddress,
 describe('getEthereumAddress', () => {
   test('should work correctly', () => {
     const samplePubKey = Buffer.from(
-        '3056301006072a8648ce3d020106052b8104000a03420004f2de8ae7a9f594fb0d399abfb58639f43fb80960a1ed7c6e257c11e764d4759e1773a2c7ec7b913bec5d0e3a12bd7acd199f62e86de3f83b35bf6749fc1144ba',
+        '43056301006072a8648ce3d020106052b8104000a03420004f2de8ae7a9f594fb0d399abfb58639f43fb80960a1ed7c6e257c11e764d4759e1773a2c7ec7b913bec5d0e3a12bd7acd199f62e86de3f83b35bf6749fc1144ba',
         'hex',
     );
     expect(getEthereumAddress(samplePubKey)).toBe('0xe94e130546485b928c9c9b9a5e69eb787172952e');
   });
   test('should fail on truncated key', () => {
     const samplePubKey = Buffer.from(
-        '3056301006072a8648ce3d020106052b8104000a03420004f2de8ae7a9f594fb0d399abfb58639f43fb80960a1ed7c6e257c11',
+        '43056301006072a8648ce3d020106052b8104000a03420004f2de8ae7a9f594fb0d399abfb58639f43fb80960a1ed7c6e257c11',
         'hex',
     );
     expect(() => getEthereumAddress(samplePubKey)).toThrow();
