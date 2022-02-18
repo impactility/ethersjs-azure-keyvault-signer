@@ -22,6 +22,7 @@ export async function getPublicKey(keyVaultCredentials:
 
   return publicKey;
 }
+
 /**
  * Returns ethereum address for a SECP-256K1 public key
  * @param {Buffer} publicKey
