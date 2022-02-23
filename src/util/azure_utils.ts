@@ -89,7 +89,7 @@ function recoverPubKeyFromSig(msg: Buffer, r: BN, s: BN, v: number) {
 export function determineCorrectV(
     msg: Buffer, r: BN, s: BN, expectedEthAddr: string) {
   // This is the wrapper function to find the right v value
-  // There are two matching signatues on the elliptic curve
+  // There are two matching signatures on the elliptic curve
   // we need to find the one that matches to our public key
   // it can be v = 27 or v = 28
   let v = 27;
