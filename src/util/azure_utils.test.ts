@@ -6,30 +6,30 @@ import {getEthereumAddress,
 } from './azure_utils';
 
 describe('getEthereumAddress', () => {
-  test('should work correctly', () => {
+  test('should work correctly', async () => {
     const samplePubKey = Buffer.from(
-        '43056301006072a8648ce3d020106052b8104000a03420004f2de8ae7a9f594fb0d399abfb58639f43fb80960a1ed7c6e257c11e764d4759e1773a2c7ec7b913bec5d0e3a12bd7acd199f62e86de3f83b35bf6749fc1144ba',
+        '0409105dfda9045744bb7e0b6b922b4bfcf339406778606ea583d31fc2244108568bfdd37a151612797e61ab1dbbf9e6d82efa66204c654d8585e89dc470923061',
         'hex',
     );
-    expect(getEthereumAddress(samplePubKey)).toBe('0xe94e130546485b928c9c9b9a5e69eb787172952e');
+    expect(await getEthereumAddress(samplePubKey)).toBe('0xd9e57b0f2e81eb2233a4055296be4a74ecf8a4de');
   });
-  test('should fail on truncated key', () => {
+  test('should fail on truncated key', async () => {
     const samplePubKey = Buffer.from(
-        '43056301006072a8648ce3d020106052b8104000a03420004f2de8ae7a9f594fb0d399abfb58639f43fb80960a1ed7c6e257c11',
+        '0409105dfda9045744bb7e0b6b922b4bfcf339406778606ea583d31fc2244108568bfdd37a151612797e61ab1dbbf9e6d82efa6',
         'hex',
     );
-    expect(() => getEthereumAddress(samplePubKey)).toThrow();
+    expect(await getEthereumAddress(samplePubKey)).not.toEqual('0xd9e57b0f2e81eb2233a4055296be4a74ecf8a4de');
   });
 });
 
 describe('findEthereumSig', () => {
   test('should work correctly', () => {
     const sampleSignature = Buffer.from(
-        '304502203f25afdb7ed67094101cd71109261886db9abbf1ba20cc53aec20ba01c2e6baa022100ab0de6d40f8960c252fc6f21e35e8369126fb19033f10953c42a61766635df82',
+        '13aac9c6a526ad400a281835648b57d3f5c63c03544396ce241d6a763a462d265ae2d02a6f99d8671c3c84cd403baa7e8a3e477631d8e7d22aecc4c1e3c96f2a',
         'hex',
     );
     expect(JSON.stringify(findEthereumSig(sampleSignature))).toBe(
-        '{"r":"3f25afdb7ed67094101cd71109261886db9abbf1ba20cc53aec20ba01c2e6baa","s":"54f2192bf0769f3dad0390de1ca17c95a83f2b567b5796e7fba7fd166a0061bf"}',
+        '{"r":"13aac9c6a526ad400a281835648b57d3f5c63c03544396ce241d6a763a462d26","s":"5ae2d02a6f99d8671c3c84cd403baa7e8a3e477631d8e7d22aecc4c1e3c96f2a"}',
     );
   });
 });
@@ -56,11 +56,11 @@ describe('determineCorrectV', () => {
     });
   });
 
-  test('should ??? if somethings are invalid', () => {
+  test('should fail if something is invalid', () => {
     const sampleMsg = Buffer.from('8600a42c4b4ab089b619297c17d53cffae5d5120d82d8a92d0bb3b78f2', 'hex');
     const sampleR = new BN('777ceae0232282cbf6da3809a678541cdef7f4f3328242641ceecb0dc', 16);
     const sampleS = new BN('5b7f7afe18221049a1e176a89a60b6c10df8c0e838edb9b2f11ae1fb50a28271', 16);
-    const expectedAddr = '0xe94e130546485b928c9c9b9a5e69eb787172952e';
+    const expectedAddr = '0xd9e57b0f2e81eb2233a4055296be4a74ecf8a4de';
     expect(() => determineCorrectV(sampleMsg, sampleR, sampleS, expectedAddr)).toThrowError();
   });
 });
