@@ -1,4 +1,4 @@
-
+[![Build and Test](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.js.yml/badge.svg)](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.js.yml)
 # ethersjs-azure-keyvault-signer
 An Ethers.js compatible signer that connects to Azure Key Vault
 
