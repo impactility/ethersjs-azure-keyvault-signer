@@ -87,6 +87,8 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   ethers.utils.Deferrable<ethers.providers.TransactionRequest>):
   Promise<string> {
     const unsignedTx = await ethers.utils.resolveProperties(transaction);
+    // ethers.js v5 doesn't support 'from' field in transaction
+    delete unsignedTx['from'];
     const serializedTx = ethers.utils.serializeTransaction(
         <UnsignedTransaction>unsignedTx);
     const transactionSignature = await this._signDigest(
