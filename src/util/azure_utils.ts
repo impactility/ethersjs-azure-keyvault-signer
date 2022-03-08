@@ -10,17 +10,22 @@ import {AzureKeyVaultCredentials} from '../index';
  */
 export async function getPublicKey(keyVaultCredentials:
   AzureKeyVaultCredentials) {
-  const credentials = new ClientSecretCredential(
-      keyVaultCredentials.tenantId, keyVaultCredentials.clientId,
-      keyVaultCredentials.clientSecret);
-  const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
-  const client = new KeyClient(keyVaultUrl, credentials);
+  try {
+    const credentials = new ClientSecretCredential(
+        keyVaultCredentials.tenantId,
+        keyVaultCredentials.clientId,
+        keyVaultCredentials.clientSecret,
+    );
+    const client = new KeyClient(keyVaultCredentials.vaultUrl, credentials);
+    const keyObject = await client.getKey(keyVaultCredentials.keyName,
+        {version: keyVaultCredentials.keyVersion!});
+    const publicKey = Buffer.concat([Uint8Array.from([4]),
+      keyObject.key.x, keyObject.key.y]);
 
-  const keyObject = await client.getKey(keyVaultCredentials.keyName);
-  const publicKey = Buffer.concat([Uint8Array.from([4]),
-    keyObject.key.x, keyObject.key.y]);
-
-  return publicKey;
+    return publicKey;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 /**
@@ -29,11 +34,16 @@ export async function getPublicKey(keyVaultCredentials:
  * @return {string}
  */
 export async function getEthereumAddress(publicKey: Buffer): Promise<string> {
-  const publicKeyWithoutPrefix = publicKey.slice(1, publicKey.length);
-
-  const address = ethers.utils.keccak256(publicKeyWithoutPrefix);
-  const ethereumAddress = `0x${address.slice(-40)}`;
-  return Promise.resolve(ethereumAddress);
+  try {
+    // remove 0x04 prefix from public to extract Ethereum address
+    const publicKeyWithoutPrefix = publicKey.slice(1, publicKey.length);
+    // calculate keccak256 hash of public and extract last 20 bytes
+    const address = ethers.utils.keccak256(publicKeyWithoutPrefix);
+    const ethereumAddress = `0x${address.slice(-40)}`;
+    return Promise.resolve(ethereumAddress);
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 /**
@@ -45,20 +55,19 @@ export async function getEthereumAddress(publicKey: Buffer): Promise<string> {
  */
 export async function sign(digest: Buffer,
     keyVaultCredentials: AzureKeyVaultCredentials): Promise<SignResult> {
-  const credentials = new ClientSecretCredential(
-      keyVaultCredentials.tenantId, keyVaultCredentials.clientId,
-      keyVaultCredentials.clientSecret);
-
   try {
-    const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
-    const client = new KeyClient(keyVaultUrl, credentials);
+    const credentials = new ClientSecretCredential(
+        keyVaultCredentials.tenantId,
+        keyVaultCredentials.clientId,
+        keyVaultCredentials.clientSecret,
+    );
+    const client = new KeyClient(keyVaultCredentials.vaultUrl, credentials);
     const keyObject = await client.getKey(keyVaultCredentials.keyName);
-    const cryptographyClient = new CryptographyClient(keyObject, credentials);
-
-    const signedDigest = await cryptographyClient.sign('ES256K', digest);
+    const keyVaultCryptoClient = new CryptographyClient(keyObject, credentials);
+    const signedDigest = await keyVaultCryptoClient.sign('ES256K', digest);
     return signedDigest;
-  } catch (err) {
-    throw new Error(err);
+  } catch (error) {
+    throw new Error(error);
   }
 }
 
@@ -108,13 +117,14 @@ export function determineCorrectV(
  * @param {Buffer} signature
  * @return {any}
  */
-export function findEthereumSig(signature: Buffer) {
+export function recoverSignature(signature: Buffer) {
   const r = new BN(signature.slice(0, 32));
   const s = new BN(signature.slice(32, 64));
 
   const secp256k1N = new BN(
       'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
-      16); // max value on the curve
+      16,
+  ); // max value on the curve
   const secp256k1halfN = secp256k1N.div(new BN(2)); // half of the curve
   // Because of EIP-2 not all elliptic curve signatures are accepted
   // the value of s needs to be SMALLER than half of the curve
@@ -134,12 +144,11 @@ export async function requestAKVSignature(
     plaintext: Buffer, keyVaultCredentials: AzureKeyVaultCredentials) {
   try {
     const signResult = await sign(plaintext, keyVaultCredentials);
-
     if (!signResult.result) {
       throw new Error('Azure Key Vault Signed result empty');
     }
-    return findEthereumSig(Buffer.from(signResult.result));
-  } catch (err) {
-    throw new Error(err);
+    return recoverSignature(Buffer.from(signResult.result));
+  } catch (error) {
+    throw new Error(error);
   }
 }

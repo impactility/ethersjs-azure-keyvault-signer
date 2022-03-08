@@ -2,7 +2,7 @@
 import {BN} from 'bn.js';
 import {getEthereumAddress,
   determineCorrectV,
-  findEthereumSig,
+  recoverSignature,
 } from './azure_utils';
 
 describe('getEthereumAddress', () => {
@@ -28,7 +28,7 @@ describe('findEthereumSig', () => {
         '13aac9c6a526ad400a281835648b57d3f5c63c03544396ce241d6a763a462d265ae2d02a6f99d8671c3c84cd403baa7e8a3e477631d8e7d22aecc4c1e3c96f2a',
         'hex',
     );
-    expect(JSON.stringify(findEthereumSig(sampleSignature))).toBe(
+    expect(JSON.stringify(recoverSignature(sampleSignature))).toBe(
         '{"r":"13aac9c6a526ad400a281835648b57d3f5c63c03544396ce241d6a763a462d26","s":"5ae2d02a6f99d8671c3c84cd403baa7e8a3e477631d8e7d22aecc4c1e3c96f2a"}',
     );
   });
