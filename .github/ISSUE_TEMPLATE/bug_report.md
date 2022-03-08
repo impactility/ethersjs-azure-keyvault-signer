@@ -3,7 +3,7 @@ name: Bug report
 about: Report any bugs to help us improve
 title: "[BUG] - Bug report title"
 labels: bug
-assignees: Sumitjh26997, ShikharBhatt
+assignees: ShikharBhatt, Sumitjh26997
 
 ---
 
@@ -24,8 +24,8 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
+ - OS: [e.g. Windows, macOS, Linux - {distro}]
+ - Browser [e.g. chrome, safari, firefox, edge]
  - Version [e.g. 22]
 
 **Additional context**

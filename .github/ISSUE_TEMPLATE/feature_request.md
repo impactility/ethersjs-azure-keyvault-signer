@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest improvements/new features for the project
 title: "[FEATURE] - Feature title"
 labels: feature
-assignees: Sumitjh26997, ShikharBhatt
+assignees: ShikharBhatt, Sumitjh26997
 
 ---
 
