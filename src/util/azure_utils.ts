@@ -16,8 +16,7 @@ export async function getPublicKey(keyVaultCredentials:
         keyVaultCredentials.clientId,
         keyVaultCredentials.clientSecret,
     );
-    const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
-    const client = new KeyClient(keyVaultUrl, credentials);
+    const client = new KeyClient(keyVaultCredentials.vaultUrl, credentials);
     const keyObject = await client.getKey(keyVaultCredentials.keyName,
         {version: keyVaultCredentials.keyVersion!});
     const publicKey = Buffer.concat([Uint8Array.from([4]),
@@ -62,8 +61,7 @@ export async function sign(digest: Buffer,
         keyVaultCredentials.clientId,
         keyVaultCredentials.clientSecret,
     );
-    const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
-    const client = new KeyClient(keyVaultUrl, credentials);
+    const client = new KeyClient(keyVaultCredentials.vaultUrl, credentials);
     const keyObject = await client.getKey(keyVaultCredentials.keyName);
     const cryptographyClient = new CryptographyClient(keyObject, credentials);
     const signedDigest = await cryptographyClient.sign('ES256K', digest);

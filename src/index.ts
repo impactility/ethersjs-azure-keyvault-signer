@@ -11,7 +11,7 @@ import {getEthereumAddress,
  */
 export interface AzureKeyVaultCredentials {
   keyName: string;
-  vaultName: string;
+  vaultUrl: string;
   clientId: string;
   clientSecret: string;
   tenantId: string;
