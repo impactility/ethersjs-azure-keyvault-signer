@@ -117,7 +117,7 @@ export function determineCorrectV(
  * @param {Buffer} signature
  * @return {any}
  */
-export function findEthereumSig(signature: Buffer) {
+export function calculateSignature(signature: Buffer) {
   const r = new BN(signature.slice(0, 32));
   const s = new BN(signature.slice(32, 64));
 
@@ -140,14 +140,14 @@ export function findEthereumSig(signature: Buffer) {
  * @param {AzureKeyVaultCredentials} keyVaultCredentials
  * @return {any}
  */
-export async function calculateSignature(
+export async function requestAKVSignature(
     plaintext: Buffer, keyVaultCredentials: AzureKeyVaultCredentials) {
   try {
     const signResult = await sign(plaintext, keyVaultCredentials);
     if (!signResult.result) {
       throw new Error('Azure Key Vault Signed result empty');
     }
-    return findEthereumSig(Buffer.from(signResult.result));
+    return calculateSignature(Buffer.from(signResult.result));
   } catch (error) {
     throw new Error(error);
   }
