@@ -1,6 +1,6 @@
 {
   "name": "ethersjs-azure-keyvault-signer",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "An Ethers.js compatible signer that connects to Azure Key Vault",
   "main": "dist/index.js",
   "scripts": {
