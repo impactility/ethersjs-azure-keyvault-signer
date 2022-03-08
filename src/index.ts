@@ -1,7 +1,7 @@
 import {ethers, UnsignedTransaction} from 'ethers';
 import {getEthereumAddress,
   getPublicKey,
-  requestAKVSignature,
+  calculateSignature,
   determineCorrectV,
 } from './util/azure_utils';
 
@@ -57,7 +57,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
    */
   async _signDigest(digestString: string): Promise<string> {
     const digestBuffer = Buffer.from(ethers.utils.arrayify(digestString));
-    const sig = await requestAKVSignature(
+    const sig = await calculateSignature(
         digestBuffer, this.keyVaultCredentials);
     const ethAddr = await this.getAddress();
     const {v} = determineCorrectV(digestBuffer, sig.r, sig.s, ethAddr);

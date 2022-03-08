@@ -63,8 +63,8 @@ export async function sign(digest: Buffer,
     );
     const client = new KeyClient(keyVaultCredentials.vaultUrl, credentials);
     const keyObject = await client.getKey(keyVaultCredentials.keyName);
-    const cryptographyClient = new CryptographyClient(keyObject, credentials);
-    const signedDigest = await cryptographyClient.sign('ES256K', digest);
+    const keyVaultCryptoClient = new CryptographyClient(keyObject, credentials);
+    const signedDigest = await keyVaultCryptoClient.sign('ES256K', digest);
     return signedDigest;
   } catch (error) {
     throw new Error(error);
@@ -140,7 +140,7 @@ export function findEthereumSig(signature: Buffer) {
  * @param {AzureKeyVaultCredentials} keyVaultCredentials
  * @return {any}
  */
-export async function requestAKVSignature(
+export async function calculateSignature(
     plaintext: Buffer, keyVaultCredentials: AzureKeyVaultCredentials) {
   try {
     const signResult = await sign(plaintext, keyVaultCredentials);
