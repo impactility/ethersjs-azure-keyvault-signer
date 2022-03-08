@@ -50,7 +50,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
-   * Sings the digest buffer with an azure key-vault SECP-256K1 key
+   * Signs the digest buffer with an azure key-vault SECP-256K1 key
    * and returns signature
    * @param {string} digestString
    * @return {any}
