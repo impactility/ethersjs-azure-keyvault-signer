@@ -117,7 +117,7 @@ export function determineCorrectV(
  * @param {Buffer} signature
  * @return {any}
  */
-export function calculateSignature(signature: Buffer) {
+export function recoverSignature(signature: Buffer) {
   const r = new BN(signature.slice(0, 32));
   const s = new BN(signature.slice(32, 64));
 
@@ -147,7 +147,7 @@ export async function requestAKVSignature(
     if (!signResult.result) {
       throw new Error('Azure Key Vault Signed result empty');
     }
-    return calculateSignature(Buffer.from(signResult.result));
+    return recoverSignature(Buffer.from(signResult.result));
   } catch (error) {
     throw new Error(error);
   }
