@@ -1,4 +1,6 @@
-[![npm](https://img.shields.io/npm/v/ethersjs-azure-keyvault-signer)](https://www.npmjs.com/package/ethersjs-azure-keyvault-signer) [![Build and Test](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.js.yml/badge.svg)](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.js.yml)
+[![npm](https://img.shields.io/npm/v/ethersjs-azure-keyvault-signer)](https://www.npmjs.com/package/ethersjs-azure-keyvault-signer)
+[![Build and Test](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.yml/badge.svg)](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.yml)
+[![Publish](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/publish.yml/badge.svg)](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/publish.yml)
 # ethersjs-azure-keyvault-signer
 An Ethers.js compatible signer that connects to Azure Key Vault
 
