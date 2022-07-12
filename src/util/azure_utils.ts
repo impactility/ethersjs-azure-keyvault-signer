@@ -1,8 +1,59 @@
 import {ethers} from 'ethers';
 import {KeyClient, CryptographyClient, SignResult} from '@azure/keyvault-keys';
-import {ClientSecretCredential} from '@azure/identity';
+import {
+  ClientSecretCredential,
+  ClientCertificateCredential} from '@azure/identity';
 import {BN} from 'bn.js';
 import {AzureKeyVaultCredentials} from '../index';
+
+/**
+ * function to connect to Key Vault using either
+ * client secret or credentials
+ * @param {AzureKeyVaultCredentials} keyVaultCredentials
+ */
+export async function keyVaultConnect(keyVaultCredentials:
+  AzureKeyVaultCredentials): Promise<KeyClient> {
+  const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
+  let credentials;
+
+  if (keyVaultCredentials.clientSecret) {
+    credentials = new ClientSecretCredential(
+        keyVaultCredentials.tenantId,
+        keyVaultCredentials.clientId,
+        keyVaultCredentials.clientSecret);
+  } else {
+    credentials = new ClientCertificateCredential(
+        keyVaultCredentials.tenantId,
+        keyVaultCredentials.clientId,
+        keyVaultCredentials.clientCertificatePath);
+  }
+
+  return new KeyClient(keyVaultUrl, credentials);
+}
+
+/**
+ * get ClientSecret or ClientCertificate Credential object
+ * @param {AzureKeyVaultCredentials} keyVaultCredentials
+ */
+export async function getCredentials(keyVaultCredentials:
+  AzureKeyVaultCredentials):
+  Promise<ClientCertificateCredential | ClientSecretCredential> {
+  let credentials;
+
+  if (keyVaultCredentials.clientSecret) {
+    credentials = new ClientSecretCredential(
+        keyVaultCredentials.tenantId,
+        keyVaultCredentials.clientId,
+        keyVaultCredentials.clientSecret);
+  } else {
+    credentials = new ClientCertificateCredential(
+        keyVaultCredentials.tenantId,
+        keyVaultCredentials.clientId,
+        keyVaultCredentials.clientCertificatePath);
+  }
+
+  return credentials;
+}
 
 /**
  * Constructs public key from azure key-vault JWK
@@ -10,11 +61,7 @@ import {AzureKeyVaultCredentials} from '../index';
  */
 export async function getPublicKey(keyVaultCredentials:
   AzureKeyVaultCredentials) {
-  const credentials = new ClientSecretCredential(
-      keyVaultCredentials.tenantId, keyVaultCredentials.clientId,
-      keyVaultCredentials.clientSecret);
-  const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
-  const client = new KeyClient(keyVaultUrl, credentials);
+  const client = await keyVaultConnect(keyVaultCredentials);
 
   const keyObject = await client.getKey(keyVaultCredentials.keyName);
   const publicKey = Buffer.concat([Uint8Array.from([4]),
@@ -45,14 +92,10 @@ export async function getEthereumAddress(publicKey: Buffer): Promise<string> {
  */
 export async function sign(digest: Buffer,
     keyVaultCredentials: AzureKeyVaultCredentials): Promise<SignResult> {
-  const credentials = new ClientSecretCredential(
-      keyVaultCredentials.tenantId, keyVaultCredentials.clientId,
-      keyVaultCredentials.clientSecret);
-
   try {
-    const keyVaultUrl = `https://${keyVaultCredentials.vaultName}.vault.azure.net`;
-    const client = new KeyClient(keyVaultUrl, credentials);
+    const client = await keyVaultConnect(keyVaultCredentials);
     const keyObject = await client.getKey(keyVaultCredentials.keyName);
+    const credentials = await getCredentials(keyVaultCredentials);
     const cryptographyClient = new CryptographyClient(keyObject, credentials);
 
     const signedDigest = await cryptographyClient.sign('ES256K', digest);
