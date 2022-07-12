@@ -13,7 +13,8 @@ export interface AzureKeyVaultCredentials {
   keyName: string;
   vaultUrl: string;
   clientId: string;
-  clientSecret: string;
+  clientSecret?: string;
+  clientCertificatePath?: string;
   tenantId: string;
   keyVersion?: string
 }
