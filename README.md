@@ -14,10 +14,29 @@ Install the azure keyvault signer library using npm
 - Our library allows enterprise users to interact with dapps without having to deal with browser wallets or the hassle of managing keys
 - It enables the user to perform cryptographic operations like signing messages and transactions stored in their enterprises' Azure Key Vault or Managed HSM
 
+## Azure Key Vault Credentials Interface
+
+Authentication to Azure Key Vault can be done either using client secret or client certificate.
+
+> Note: The client certificate should be a .pem encoded file with unencrypted private key included.
+
+```ts
+interface AzureKeyVaultCredentials {
+  keyName: string;
+  vaultName: string;
+  clientId: string;
+  tenantId: string;
+  clientSecret?: string;
+  clientCertificatePath?: string;
+  keyVersion?: string
+}
+```
+
 
 # Sample Usage
 
 You need to provide the Azure Key Vault credentials to instantiate an instance of `AzureKeyVaultSigner` shown below:
+
 
 ```ts
 import {AzureKeyVaultCredentials, AzureKeyVaultSigner} from 'ethersjs-azure-keyvault-signer';
