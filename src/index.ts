@@ -11,7 +11,7 @@ import {getEthereumAddress,
  */
 export interface AzureKeyVaultCredentials {
   keyName: string;
-  vaultName: string;
+  vaultUrl: string;
   clientId: string;
   clientSecret?: string;
   clientCertificatePath?: string;
@@ -51,7 +51,7 @@ export class AzureKeyVaultSigner extends ethers.Signer {
   }
 
   /**
-   * Sings the digest buffer with an azure key-vault SECP-256K1 key
+   * Signs the digest buffer with an azure key-vault SECP-256K1 key
    * and returns signature
    * @param {string} digestString
    * @return {any}

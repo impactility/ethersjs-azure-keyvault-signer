@@ -1,4 +1,6 @@
-
+[![npm](https://img.shields.io/npm/v/ethersjs-azure-keyvault-signer)](https://www.npmjs.com/package/ethersjs-azure-keyvault-signer)
+[![Build and Test](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.yml/badge.svg)](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/build.yml)
+[![Publish](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/publish.yml/badge.svg)](https://github.com/impactility-dev/ethersjs-azure-keyvault-signer/actions/workflows/publish.yml)
 # ethersjs-azure-keyvault-signer
 An Ethers.js compatible signer that connects to Azure Key Vault
 
@@ -44,10 +46,11 @@ import {ethers} from 'ethers';
 
 const keyVaultCredentials : AzureKeyVaultCredentials = {
     keyName: 'my-key',
-    vaultName: 'my-vault',
+    vaultUrl: 'https://my-vault.vault.azure.net',
     clientId: 'ACIXXXXXXXXXXXX',
     clientSecret: 'XXXXXXXXXXXXXXXXX',
-    tenantId: 'ATIXXXXXXXXXXXXXXXX'
+    tenantId: 'ATIXXXXXXXXXXXXXXXX',
+    keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
 };
 
 let azureKeyVaultSigner = new AzureKeyVaultSigner(keyVaultCredentials);
@@ -75,10 +78,11 @@ import {ethers} from 'ethers';
 
 const keyVaultCredentials : AzureKeyVaultCredentials = {
     keyName: 'my-key',
-    vaultName: 'my-vault',
+    vaultUrl: 'https://my-vault.vault.azure.net',
     clientId: 'ACIXXXXXXXXXXXX',
     clientSecret: 'XXXXXXXXXXXXXXXXX',
-    tenantId: 'ATIXXXXXXXXXXXXXXXX'
+    tenantId: 'ATIXXXXXXXXXXXXXXXX',
+    keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
 };
 
 let azureKeyVaultSigner = new AzureKeyVaultSigner(keyVaultCredentials);
@@ -98,10 +102,11 @@ import {ethers} from 'ethers';
 
 const keyVaultCredentials : AzureKeyVaultCredentials = {
     keyName: 'my-key',
-    vaultName: 'my-vault',
+    vaultUrl: 'https://my-vault.vault.azure.net',
     clientId: 'ACIXXXXXXXXXXXX',
     clientSecret: 'XXXXXXXXXXXXXXXXX',
-    tenantId: 'ATIXXXXXXXXXXXXXXXX'
+    tenantId: 'ATIXXXXXXXXXXXXXXXX',
+    keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
 };
 
 let azureKeyVaultSigner = new AzureKeyVaultSigner(keyVaultCredentials);
@@ -119,10 +124,11 @@ import {ethers} from 'ethers';
 
 const keyVaultCredentials : AzureKeyVaultCredentials = {
     keyName: 'my-key',
-    vaultName: 'my-vault',
+    vaultUrl: 'https://my-vault.vault.azure.net',
     clientId: 'ACIXXXXXXXXXXXX',
     clientSecret: 'XXXXXXXXXXXXXXXXX',
-    tenantId: 'ATIXXXXXXXXXXXXXXXX'
+    tenantId: 'ATIXXXXXXXXXXXXXXXX',
+    keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
 };
 
 let azureKeyVaultSigner = new AzureKeyVaultSigner(keyVaultCredentials);
@@ -142,10 +148,11 @@ import {ethers} from 'ethers';
 
 const keyVaultCredentials : AzureKeyVaultCredentials = {
     keyName: 'my-key',
-    vaultName: 'my-vault',
+    vaultUrl: 'https://my-vault.vault.azure.net',
     clientId: 'ACIXXXXXXXXXXXX',
     clientSecret: 'XXXXXXXXXXXXXXXXX',
-    tenantId: 'ATIXXXXXXXXXXXXXXXX'
+    tenantId: 'ATIXXXXXXXXXXXXXXXX',
+    keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
 };
 
 let azureKeyVaultSigner = new AzureKeyVaultSigner(keyVaultCredentials);
