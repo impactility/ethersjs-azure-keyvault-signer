@@ -1,3 +1,4 @@
+import {AccessToken} from '@azure/identity';
 import {ethers, UnsignedTransaction} from 'ethers';
 import {getEthereumAddress,
   getPublicKey,
@@ -12,10 +13,11 @@ import {getEthereumAddress,
 export interface AzureKeyVaultCredentials {
   keyName: string;
   vaultUrl: string;
-  clientId: string;
+  clientId?: string;
+  tenantId?: string;
   clientSecret?: string;
   clientCertificatePath?: string;
-  tenantId: string;
+  accessToken?: AccessToken;
   keyVersion?: string
 }
 
