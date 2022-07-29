@@ -2,9 +2,12 @@ import {ethers} from 'ethers';
 import {KeyClient, CryptographyClient, SignResult} from '@azure/keyvault-keys';
 import {
   ClientSecretCredential,
-  ClientCertificateCredential} from '@azure/identity';
+  ClientCertificateCredential,
+  AccessToken,
+} from '@azure/identity';
 import {BN} from 'bn.js';
 import {AzureKeyVaultCredentials} from '../index';
+import {StaticTokenCredential} from './credentials';
 
 /**
  * function to connect to Key Vault using either
@@ -13,22 +16,13 @@ import {AzureKeyVaultCredentials} from '../index';
  */
 export async function keyVaultConnect(keyVaultCredentials:
   AzureKeyVaultCredentials): Promise<KeyClient> {
-  const keyVaultUrl = keyVaultCredentials.vaultUrl;
-  let credentials;
-
-  if (keyVaultCredentials.clientSecret) {
-    credentials = new ClientSecretCredential(
-        keyVaultCredentials.tenantId,
-        keyVaultCredentials.clientId,
-        keyVaultCredentials.clientSecret);
-  } else {
-    credentials = new ClientCertificateCredential(
-        keyVaultCredentials.tenantId,
-        keyVaultCredentials.clientId,
-        keyVaultCredentials.clientCertificatePath);
+  try {
+    const keyVaultUrl = keyVaultCredentials.vaultUrl;
+    const credentials = await getCredentials(keyVaultCredentials);
+    return new KeyClient(keyVaultUrl, credentials);
+  } catch (error) {
+    throw new Error(error);
   }
-
-  return new KeyClient(keyVaultUrl, credentials);
 }
 
 /**
@@ -37,7 +31,9 @@ export async function keyVaultConnect(keyVaultCredentials:
  */
 export async function getCredentials(keyVaultCredentials:
   AzureKeyVaultCredentials):
-  Promise<ClientCertificateCredential | ClientSecretCredential> {
+  Promise<
+    ClientCertificateCredential | ClientSecretCredential | StaticTokenCredential
+  > {
   let credentials;
 
   if (keyVaultCredentials.clientSecret) {
@@ -45,11 +41,16 @@ export async function getCredentials(keyVaultCredentials:
         keyVaultCredentials.tenantId,
         keyVaultCredentials.clientId,
         keyVaultCredentials.clientSecret);
-  } else {
+  } else if (keyVaultCredentials.clientCertificatePath) {
     credentials = new ClientCertificateCredential(
         keyVaultCredentials.tenantId,
         keyVaultCredentials.clientId,
         keyVaultCredentials.clientCertificatePath);
+  } else if (keyVaultCredentials.accessToken) {
+    credentials = new StaticTokenCredential(
+        keyVaultCredentials.accessToken);
+  } else {
+    throw new Error('Credentials not found');
   }
 
   return credentials;
