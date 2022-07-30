@@ -4,10 +4,14 @@
 # ethersjs-azure-keyvault-signer
 An Ethers.js compatible signer that connects to Azure Key Vault
 
+<br/>
+
 # Installation
 Install the azure keyvault signer library using npm
 
 `npm install ethersjs-azure-keyvault-signer`
+
+<br/>
 
 # Background
 - Current web3 signers only support keys managed by the users directly in the form of browser wallets like Metamask, WalletConnect, Hardware wallets or self managed keys.
@@ -16,28 +20,85 @@ Install the azure keyvault signer library using npm
 - Our library allows enterprise users to interact with dapps without having to deal with browser wallets or the hassle of managing keys
 - It enables the user to perform cryptographic operations like signing messages and transactions stored in their enterprises' Azure Key Vault or Managed HSM
 
-## Azure Key Vault Credentials Interface
+<br/>
 
-Authentication to Azure Key Vault can be done either using client secret or client certificate.
+# Azure Key Vault Credentials Interface
 
-> Note: The client certificate should be a .pem encoded file with unencrypted private key included.
+Authentication to Azure Key Vault can be done either using client secret, client certificate or access token(with the Key Vault scope).
 
 ```ts
 interface AzureKeyVaultCredentials {
   keyName: string;
   vaultName: string;
-  clientId: string;
-  tenantId: string;
+  clientId?: string;
+  tenantId?: string;
   clientSecret?: string;
   clientCertificatePath?: string;
+  accessToken?: AccessToken;
   keyVersion?: string
 }
 ```
 
+<br/>
+
+## Sample AzureKeyVaultCredentials objects
+
+<br/>
+
+- *Client Secret*
+  ```ts
+  const keyVaultCredentials : AzureKeyVaultCredentials = {
+      keyName: 'my-key',
+      vaultUrl: 'https://my-vault.vault.azure.net',
+      clientId: 'ACIXXXXXXXXXXXX',
+      clientSecret: 'XXXXXXXXXXXXXXXXX',
+      tenantId: 'ATIXXXXXXXXXXXXXXXX',
+      keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
+  };
+  ```
+
+<br/>
+
+- *Client Certificate*
+
+  ```ts
+  const keyVaultCredentials : AzureKeyVaultCredentials = {
+      keyName: 'my-key',
+      vaultUrl: 'https://my-vault.vault.azure.net',
+      clientId: 'ACIXXXXXXXXXXXX',
+      clientCertificatePath: './directory/cert.pem',
+      tenantId: 'ATIXXXXXXXXXXXXXXXX',
+      keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
+  };
+  ```
+  > Note: The client certificate should be a .pem encoded file with unencrypted private key included.
+
+<br/>
+
+- *Access Token*
+
+  ```ts
+  import { AccessToken } from "@azure/core-auth";
+
+  const accessTokenObject : AccessToken = {
+      token: '<JWT-Access-Token>',
+      expiresOnTimestamp: '<expiration-time-of-token>', // can be obtained from the accessToken object in the application
+  };
+
+  const keyVaultCredentials : AzureKeyVaultCredentials = {
+      keyName: 'my-key',
+      vaultUrl: 'https://my-vault.vault.azure.net',
+      accessToken: accessTokenObject,
+      keyVersion: '610f2XXXXXXXXXXX' //optional; if not included, latest version of the key is fetched
+  };
+  ```
+<br/>
 
 # Sample Usage
 
-You need to provide the Azure Key Vault credentials to instantiate an instance of `AzureKeyVaultSigner` shown below:
+You need to provide the Azure Key Vault credentials to instantiate an instance of `AzureKeyVaultSigner` shown below.
+
+All examples below use client secret based authentication.
 
 
 ```ts
@@ -61,6 +122,7 @@ azureKeyVaultSigner = azureKeyVaultSigner.connect(provider);
 const tx = await azureKeyVaultSigner.sendTransaction({ to: '0x19De7137aEba698D5970d0B2d41eB03e0F97fA56', value: 2 });
 console.log(tx);
 ```
+<br/>
 
 # Examples
 The following section provides code snippets that cover functionalities offered by ethersjs-azure-keyvault-signer package.
@@ -165,6 +227,7 @@ to: '0x19De7137aEba698D5970d0B2d41eB03e0F97fA56',
 const signedTransaction = await azureKeyVaultSigner.signTransaction(transaction);
 console.log(signedTransaction);
 ```
+<br/>
 
 # LICENSE
 MIT © [Impactility](https://github.com/impactility-dev)
