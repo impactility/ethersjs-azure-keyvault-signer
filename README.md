@@ -34,7 +34,7 @@ interface AzureKeyVaultCredentials {
   tenantId?: string;
   clientSecret?: string;
   clientCertificatePath?: string;
-  accessToken: AccessToken;
+  accessToken?: AccessToken;
   keyVersion?: string
 }
 ```
